@@ -1,0 +1,82 @@
+# Overrides merged on top of xiaozhi-esp32-server's config.yaml.
+# Installed as main/xiaozhi-server/data/.config.yaml by scripts/install-server.sh,
+# which also replaces __LAN_IP__ with the Mac's address.
+
+server:
+  ip: 0.0.0.0
+  port: 8000
+  http_port: 8003
+  websocket: ws://__LAN_IP__:8000/xiaozhi/v1/
+  vision_explain: http://__LAN_IP__:8003/mcp/vision/explain
+  timezone_offset: -6  # Mountain Daylight Time (use -7 in winter)
+
+log:
+  log_level: INFO
+
+prompt: |
+  You are a friendly voice assistant on a small speaker in a home in Nampa, Idaho.
+  Answer in one or two short spoken sentences. No lists, markdown or emoji.
+  For any question about weather, temperature, rain, snow or wind, call the get_weather tool.
+  Pass a location only if the user names one; otherwise the default is Nampa, Idaho.
+  Read temperatures as "degrees", e.g. "83 degrees".
+
+system_error_response: "Sorry, I'm having trouble right now. Please try again in a moment."
+
+end_prompt:
+  enable: false
+
+exit_commands:
+  - "goodbye"
+  - "stop listening"
+
+wakeup_words:
+  - "hey there"
+
+module_test:
+  test_sentences:
+    - "What's the weather?"
+    - "What's the weather in Boise?"
+
+selected_module:
+  VAD: SileroVAD
+  ASR: FunASR
+  LLM: LocalOllama
+  VLLM: ChatGLMVLLM
+  TTS: PiperTTS
+  Memory: nomem
+  Intent: function_call
+
+Intent:
+  function_call:
+    type: function_call
+    functions:
+      - get_weather
+
+ASR:
+  FunASR:
+    type: fun_local
+    model_dir: models/SenseVoiceSmall
+    output_dir: tmp/
+    language: en
+
+LLM:
+  LocalOllama:
+    type: openai_nothink
+    base_url: http://__LAN_IP__:11434/v1
+    api_key: ollama
+    model_name: qwen3:8b
+    temperature: 0.3
+    max_tokens: 300
+
+TTS:
+  PiperTTS:
+    # piper.http_server, started by scripts/run-server.sh
+    type: custom
+    method: POST
+    url: "http://127.0.0.1:5000/synthesize"
+    params:
+      text: "{prompt_text}"
+    headers: {}
+    format: wav
+    output_dir: tmp/
+    language: English
