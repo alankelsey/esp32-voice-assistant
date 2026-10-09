@@ -5,14 +5,18 @@ set -euo pipefail
 MODEL="${1:-qwen3:8b}"
 IP="$(ipconfig getifaddr en0 || ipconfig getifaddr en1)"
 LOG="${TMPDIR:-/tmp}/ollama-lan.log"
+# Use native (arm64) Homebrew; an Intel /usr/local Ollama runs under Rosetta with no Metal GPU.
+OLLAMA="/opt/homebrew/bin/ollama"
+[ -x "$OLLAMA" ] || OLLAMA="$(command -v ollama)"
+file -L "$OLLAMA" | grep -q arm64 || echo "WARN: $OLLAMA is not arm64; it will be slow (no Metal)"
 
 if ! lsof -nP -iTCP:11434 -sTCP:LISTEN >/dev/null 2>&1; then
-  OLLAMA_HOST=0.0.0.0:11434 OLLAMA_KEEP_ALIVE=-1 nohup ollama serve >"$LOG" 2>&1 &
+  OLLAMA_HOST=0.0.0.0:11434 OLLAMA_KEEP_ALIVE=-1 nohup "$OLLAMA" serve >"$LOG" 2>&1 &
   for _ in $(seq 1 40); do curl -sf "http://$IP:11434/api/version" >/dev/null && break; sleep 0.5; done
 fi
 
 echo "Ollama on http://$IP:11434/v1 (log: $LOG)"
-# qwen3 ignores "/no_think" via /v1; reasoning_effort=none disables thinking (~3s vs ~45s).
+# qwen3 ignores "/no_think" via /v1; reasoning_effort=none disables thinking (~1-3s vs ~14s native).
 curl -sS -w '\nHTTP %{http_code} in %{time_total}s\n' "http://$IP:11434/v1/chat/completions" \
   -H 'Content-Type: application/json' \
   -d "{\"model\":\"$MODEL\",\"reasoning_effort\":\"none\",\"messages\":[{\"role\":\"user\",\"content\":\"Say hi in 3 words.\"}]}"
