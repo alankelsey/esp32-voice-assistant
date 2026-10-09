@@ -64,7 +64,8 @@ LLM:
     type: openai_nothink
     base_url: http://__LAN_IP__:11434/v1
     api_key: ollama
-    model_name: qwen3:8b
+    # Abliterated (uncensored) qwen3; tool calls work. Was qwen3:8b.
+    model_name: huihui_ai/qwen3-abliterated:14b
     temperature: 0.3
     max_tokens: 300
 
