@@ -11,7 +11,7 @@ A `get_weather(location?)` tool uses Open-Meteo and defaults to **Nampa, ID** wh
 A small `local-llm` MCP server (`ask_local`, `list_models`) lets Claude Code hand off small tasks to Ollama.
 
 ## Plan
-Full plan: PLAN_DOC_LINK
+Full plan: [ESP32 Voice Assistant – Experimental Plan](https://docs.google.com/document/d/1LKtFHFKGZtDtuS5XtwG7OU1HQpyIoBrRifobBde8CZw/edit)
 
 ## License
 Public domain ([The Unlicense](LICENSE)).
