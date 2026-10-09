@@ -23,4 +23,4 @@ curl -sS -w '\nHTTP %{http_code} in %{time_total}s\n' "http://$IP:11434/v1/chat/
 
 # Firewall: the allow rule is tied to the versioned Cellar path; re-check after brew upgrade.
 /usr/libexec/ApplicationFirewall/socketfilterfw --listapps | grep -A1 -i ollama || \
-  echo "WARN: no firewall rule for ollama; run: sudo /usr/libexec/ApplicationFirewall/socketfilterfw --add \"$(readlink -f "$(which ollama)")\""
+  echo "WARN: no firewall rule for ollama; run: sudo /usr/libexec/ApplicationFirewall/socketfilterfw --add \"$(readlink -f "$OLLAMA")\""
