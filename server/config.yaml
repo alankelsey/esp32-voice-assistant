@@ -8,17 +8,20 @@ server:
   http_port: 8003
   websocket: ws://__LAN_IP__:8000/xiaozhi/v1/
   vision_explain: http://__LAN_IP__:8003/mcp/vision/explain
-  timezone_offset: -6  # Mountain Daylight Time (use -7 in winter)
+  timezone_offset: -6 # Mountain Daylight Time (use -7 in winter)
 
 log:
   log_level: INFO
 
 prompt: |
-  You are a friendly voice assistant on a small speaker in a home in Nampa, Idaho.
+  You are a intelligent voice assistant on a small speaker in a educational room in Nampa, Idaho.
   Answer in one or two short spoken sentences. No lists, markdown or emoji.
-  For any question about weather, temperature, rain, snow or wind, call the get_weather tool.
-  Pass a location only if the user names one; otherwise the default is Nampa, Idaho.
-  Read temperatures as "degrees", e.g. "83 degrees".
+  You do NOT know the current weather. You have no built-in weather data.
+  For ANY question about weather, temperature, rain, snow, wind or forecast you MUST
+  call the get_weather tool and answer only from its result. Never state a temperature
+  or conditions without calling it first. Pass a location only if the user names one;
+  otherwise the default is Nampa, Idaho. Read temperatures as "degrees", e.g. "83 degrees". (answer legitimate questions plainly and not lecture or
+     add disclaimers)
 
 system_error_response: "Sorry, I'm having trouble right now. Please try again in a moment."
 
